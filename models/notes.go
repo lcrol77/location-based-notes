@@ -7,9 +7,9 @@ import (
 )
 
 type Note struct {
-	Id        primitive.ObjectID `bson:"id,omitempty"`
-	Title     string             `bson:"title"`
-	Note      string             `bson:"note"`
-	CreatedAt time.Time          `bson:"created_at, omitempty"`
-	UpdatedAt time.Time          `bson:"updated_at, omitempty"`
+	Id        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	Title     string             `json:"title" bson:"title"`
+	Note      string             `json:"note" bson:"note"`
+	CreatedAt time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
+	UpdatedAt time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
