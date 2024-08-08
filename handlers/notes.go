@@ -9,8 +9,13 @@ import (
 )
 
 func GetAllNotes(c echo.Context) error {
-	return nil
+	notes, err := db.GetAllNotes()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, notes)
 }
+
 func GetNotes(c echo.Context) error {
 	return nil
 }

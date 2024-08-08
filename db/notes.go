@@ -4,7 +4,9 @@ import (
 	"context"
 	"notes/models"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func CreateNote(note models.Note) (models.Note, error) {
@@ -15,4 +17,16 @@ func CreateNote(note models.Note) (models.Note, error) {
 		return note, err
 	}
 	return note, nil
+}
+
+func GetAllNotes() ([]models.Note, error) {
+	coll := GetDB().Collection("notes")
+	notes := []models.Note{}
+    findOptions := options.Find()
+    cursor, err := coll.Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		return notes, err
+	}
+	cursor.All(context.TODO(), &notes)
+	return notes, nil
 }
