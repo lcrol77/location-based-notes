@@ -15,7 +15,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	db.InitPostgresDB()
 	e := echo.New()
 	// Middleware
 	e.Use(middleware.Logger())
@@ -26,5 +25,7 @@ func main() {
 	e.POST("/note", handlers.CreateNote)
 	e.PUT("/note/:id", handlers.UpdateNote)
 	e.DELETE("/note/:id", handlers.DeleteNote)
+	db.InitMongodbClient()
+	defer db.CloseClientConnection()
 	e.Logger.Fatal(e.Start(":8080"))
 }

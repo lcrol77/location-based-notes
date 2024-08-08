@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:latest
+    image: postgis/postgis:latest
     container_name: postgres_db
     restart: always
     environment:
@@ -17,6 +17,16 @@ services:
     ports:
       - 8888:8080
 
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+      - 8001:8001
+
 volumes:
   postgres_db:
     driver: local
+  redis:
+    driver: local
+
