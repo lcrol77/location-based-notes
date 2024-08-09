@@ -17,7 +17,17 @@ func GetAllNotes(c echo.Context) error {
 }
 
 func GetNotes(c echo.Context) error {
-	return nil
+	return c.JSON(http.StatusNotImplemented, "not implemented yet")
+}
+
+func GetNote(c echo.Context) error {
+	var id string
+	c.Bind(&id)
+	note, err:= db.GetNote(id);
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, note)
 }
 
 func CreateNote(c echo.Context) error {
@@ -31,8 +41,21 @@ func CreateNote(c echo.Context) error {
 }
 
 func UpdateNote(c echo.Context) error {
-	return nil
+	note := models.Note{}
+	c.Bind(&note)
+	newNote, err := db.UpdateNote(note)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, newNote)
 }
+
 func DeleteNote(c echo.Context) error {
-	return nil
+	note := models.Note{}
+	c.Bind(&note)
+	newNote, err := db.DeleteNote(note)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, newNote)
 }

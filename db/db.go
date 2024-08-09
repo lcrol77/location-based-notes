@@ -34,6 +34,10 @@ func GetDB() *mongo.Database {
 	return db.Database("notes")
 }
 
+func GetNotesCollection() *mongo.Collection {
+	return GetDB().Collection("notes")
+}
+
 func CloseClientConnection() {
 	if err := db.Disconnect(context.TODO()); err != nil {
 		panic(err)
