@@ -1,4 +1,4 @@
-package configs
+package db
 
 import (
 	"context"
@@ -25,9 +25,9 @@ func ConnectDB() *mongo.Client {
 	return client
 }
 
-var DB *mongo.Client = ConnectDB()
+var DB = ConnectDB()
 
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	collection := client.Database("notes").Collection(collectionName)
+	collection := client.Database("lbn").Collection(collectionName)
 	return collection
 }
