@@ -16,7 +16,6 @@ func ConnectDB() *mongo.Client {
 	if err != nil {
 		panic(err)
 	}
-
 	//ping the database
 	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
 		panic(err)
@@ -25,7 +24,7 @@ func ConnectDB() *mongo.Client {
 	return client
 }
 
-var DB = ConnectDB()
+var DB *mongo.Client = ConnectDB()
 
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	collection := client.Database("lbn").Collection(collectionName)
