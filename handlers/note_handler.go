@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"lbn/db"
 	"lbn/models"
 	"lbn/responses"
+	"log"
 	"net/http"
 	"time"
 
@@ -39,8 +41,8 @@ func CreateNote(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.NoteResponse{Status: http.StatusInternalServerError, Message: "error", Errors: []string{err.Error()}})
 	}
-	// TODO: query the note and return it here so that all of the information is in the returned note
-	return c.JSON(http.StatusCreated, responses.NoteResponse{Status: http.StatusCreated, Message: "success", Note: newNote, Inserted: []interface{}{result}})
+	err = noteCollection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&note)
+	return c.JSON(http.StatusCreated, responses.NoteResponse{Status: http.StatusCreated, Message: "success", Note: note})
 }
 
 func GetNotes(c echo.Context) error {
@@ -60,4 +62,22 @@ func GetNotes(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, responses.NotesResponse{Status: http.StatusOK, Message: "success", Notes: notes})
+}
+
+func GetNote(c echo.Context) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	id := c.Param("id")
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Print("Invalid ObjectID: ", err)
+		return c.JSON(http.StatusInternalServerError, responses.NoteResponse{Status: http.StatusBadRequest, Message: "error", Errors: []string{err.Error()}})
+	}
+	var note models.Note
+	err = noteCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&note)
+	if err != nil {
+		log.Print("Note not found: ", err)
+		return c.JSON(http.StatusInternalServerError, responses.NoteResponse{Status: http.StatusNotFound, Message: "error", Errors: []string{err.Error()}})
+	}
+	return c.JSON(http.StatusCreated, responses.NoteResponse{Status: http.StatusOK, Message: "success", Note: note})
 }

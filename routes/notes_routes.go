@@ -7,5 +7,6 @@ import (
 
 func NotesRoute(e *echo.Echo) {
 	e.GET("/notes", handlers.GetNotes)
+	e.GET("/note/:id", handlers.GetNote)
 	e.POST("/note", handlers.CreateNote)
 }
