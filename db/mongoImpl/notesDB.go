@@ -50,3 +50,19 @@ func (m *NotesMongoDatabase) FindNote(ctx context.Context, id string) (models.No
 	}
 	return note, err
 }
+
+func (m *NotesMongoDatabase) DeleteNote(ctx context.Context, id string) (mongo.DeleteResult, error) {
+	var res mongo.DeleteResult
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Print("Invalid ObjectID: ", err)
+		return res, err
+	}
+	ptr, err := m.Collection.DeleteOne(ctx, bson.M{"_id": objId})	
+	if err != nil {
+		log.Print("Note not found: ", err)
+		return res, err
+	}
+	res = *ptr
+	return res, err
+}
