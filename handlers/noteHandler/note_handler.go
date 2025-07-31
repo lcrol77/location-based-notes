@@ -72,3 +72,14 @@ func (n *NotesHandler) GetNote(c echo.Context) error {
 	}
 	return c.JSON(http.StatusCreated, responses.NoteResponse{Status: http.StatusOK, Message: "success", Note: note})
 }
+
+func (n *NotesHandler) DeleteNote(c echo.Context) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	id := c.Param("id")
+	note, err := n.DB.DeleteNote(ctx, id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.NoteResponse{Status: http.StatusNotFound, Message: "error", Errors: []string{err.Error()}})
+	}
+	return c.JSON(http.StatusCreated, note)
+}

@@ -1,16 +1,19 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
 	"lbn/routes"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	routes.NotesRoute(e)
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
+		return c.JSON(http.StatusOK, "hello world")
 	})
 	e.Logger.Fatal(e.Start(":8080"))
 }
