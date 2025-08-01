@@ -39,8 +39,10 @@ func (n *NotesHandler) CreateNote(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.NoteResponse{Status: http.StatusBadRequest, Message: "error", Errors: []string{validationErr.Error()}})
 	}
 	newNote := models.Note{
-		Title: note.Title,
-		Body:  note.Body,
+		Title:     note.Title,
+		Body:      note.Body,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	insertedNote, err := n.DB.InsertNote(ctx, newNote)
 	if err != nil {
