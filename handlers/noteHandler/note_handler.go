@@ -28,12 +28,10 @@ func (n *NotesHandler) CreateNote(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var note models.Note
 	defer cancel()
-
 	//validate the request body
 	if err := c.Bind(&note); err != nil {
 		return c.JSON(http.StatusBadRequest, responses.NoteResponse{Status: http.StatusBadRequest, Message: "errors", Errors: []string{err.Error()}})
 	}
-
 	//use the validator library to validate required fields
 	if validationErr := validate.Struct(&note); validationErr != nil {
 		return c.JSON(http.StatusBadRequest, responses.NoteResponse{Status: http.StatusBadRequest, Message: "error", Errors: []string{validationErr.Error()}})
@@ -41,6 +39,7 @@ func (n *NotesHandler) CreateNote(c echo.Context) error {
 	newNote := models.Note{
 		Title:     note.Title,
 		Body:      note.Body,
+		Location:  note.Location,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
